@@ -27,7 +27,7 @@ export default parse({
 ```tsx
 // Greeting.tsx
 import { useTranslator } from "@havelaer/msgs/react";
-import msgs from "./greeting.msgs";
+import msgs from "./Greeting.msgs";
 
 export default function Greeting() {
   const t = useTranslator();
