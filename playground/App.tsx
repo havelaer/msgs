@@ -1,25 +1,40 @@
 import "./App.css";
 import msgs from "./App.msgs";
-import { useTranslator, TranslatorProvider } from "../src/react";
-import { format } from "./msgs.config";
+import { useTranslator, FormatterProvider, LocaleProvider } from "../src/react";
+import formatter from "./formatter";
+import { useState } from "react";
 
-function Hello() {
-  const t = useTranslator();
+function Greeting({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+	const t = useTranslator();
 
-  return (
-    <h1>{t(msgs.error.noGroups, { name: "John" })}</h1>
-  );
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  };
+
+	return (
+		<div>
+			<div>{t.jsx(msgs.hello, { name: value, b: <strong /> })}</div>
+			<input
+				type="text"
+				placeholder={t(msgs.nameInput.placeholder)}
+				value={value}
+				onChange={handleChange}
+			/>
+		</div>
+	);
 }
 
 function App() {
-  return (
-    <TranslatorProvider locale="nl-NL" format={format}>
-      <Hello />
-      <TranslatorProvider locale="en-US" format={format}>
-        <Hello />
-      </TranslatorProvider>
-    </TranslatorProvider>
-  );
+  const [name, setName] = useState("John");
+
+	return (
+		<FormatterProvider formatter={formatter} locale="nl-NL">
+			<Greeting value={name} onChange={setName} />
+			<LocaleProvider locale="en-US">
+				<Greeting value={name} onChange={setName} />
+			</LocaleProvider>
+		</FormatterProvider>
+	);
 }
 
 export default App;
