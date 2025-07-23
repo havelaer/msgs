@@ -1,6 +1,6 @@
-import { createContext, useContext, type ReactNode } from "react";
+import { type ReactNode, createContext, useContext } from "react";
 import type { Formatter } from "..";
-import { isMarkupPart, isStringPart, isTextPart } from "../utils";
+import { buildJsxTree } from "./utils";
 
 const localeContext = createContext<string | null>(null);
 const formatterContext = createContext<Formatter<any> | null>(null);
@@ -31,25 +31,7 @@ export function useTranslator(): Translator {
 	): ReactNode {
 		const parts = formatter.formatToParts(locale, msg, args);
 
-		console.log(parts);
-
-		const jsxParts = parts.map((part) => {
-			if (isTextPart(part)) {
-				return part.value;
-			}
-			if (isStringPart(part)) {
-				return part.value;
-			}
-			if (isMarkupPart(part) && part.kind === "open") {
-				return args?.[part.name] ?? null;
-			}
-			if (isMarkupPart(part) && part.kind === "close") {
-				return args?.[part.name] ?? null;
-			}
-			return null;
-		});
-
-		return <>{jsxParts}</>;
+		return <>{buildJsxTree(parts, args)}</>;
 	};
 
 	return result;
