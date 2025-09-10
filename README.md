@@ -13,9 +13,9 @@ Component based i18n messages for React.
 
 ```ts
 // Greeting.msgs.ts
-import { parse } from "./msgs.config";
+import msgs from "./msgs.config";
 
-export default parse({
+export default msgs.parse({
   greeting: {
     "en-US": "Hello {$name}",
     "nl-NL": "Hallo {$name}",
@@ -29,9 +29,23 @@ export default parse({
 import { useTranslator } from "@havelaer/msgs/react";
 import msgs from "./Greeting.msgs";
 
-export default function Greeting() {
+export function Greeting() {
   const t = useTranslator();
 
   return <h1>{t(msgs.greeting, { name: "John" })}</h1>;
 }
 ```
+
+```tsx
+// App.tsx
+import { MsgsProvider } from "@havelaer/msgs/react";
+import msgsConfig from "./msgs.config";
+import { Greeting } from "./Greeting";
+
+export default function App() {
+  return (
+    <MsgsProvider config={msgsConfig} locale={msgsConfig.resolveLocale(navigator.languages)}>
+      <Greeting />
+    </MsgsProvider>
+  );
+}

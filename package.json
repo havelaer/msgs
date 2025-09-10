@@ -17,7 +17,8 @@
     }
   },
   "scripts": {
-    "lint": "biome lint ."
+    "lint": "biome lint .",
+    "build": "tsdown"
   },
   "files": [
     "dist"
