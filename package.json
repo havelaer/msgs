@@ -8,12 +8,12 @@
       "import": "./dist/index.js"
     },
     "./react": {
-      "types": "./dist/react/index.d.ts",
-      "import": "./dist/react/index.js"
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
     },
     "./functions": {
-      "types": "./dist/functions/index.d.ts",
-      "import": "./dist/functions/index.js"
+      "types": "./dist/functions.d.ts",
+      "import": "./dist/functions.js"
     }
   },
   "publishConfig": {
