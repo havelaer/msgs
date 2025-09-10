@@ -1,6 +1,6 @@
 {
   "name": "@havelaer/msgs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "exports": {
     ".": {
@@ -24,7 +24,9 @@
     "prepublishOnly": "npm run check -- --fix && npm run build && npm version patch -m 'chore: publishing version %s'",
     "build": "tsdown"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/node": "^22.13.9",
@@ -34,7 +36,10 @@
     "react-dom": "^19.0.0",
     "typescript": "~5.7.2"
   },
-  "workspaces": [".", "playground"],
+  "workspaces": [
+    ".",
+    "playground"
+  ],
   "dependencies": {
     "messageformat": "4.0.0-13"
   }
