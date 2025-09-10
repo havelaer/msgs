@@ -6,4 +6,6 @@ export default defineConfig({
     react: "src/react/index.tsx",
     functions: "src/functions/index.ts",
   },
+  platform: "browser",
+  dts: true,
 });
