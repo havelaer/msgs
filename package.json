@@ -19,6 +19,15 @@
   "publishConfig": {
     "access": "public"
   },
+  "keywords": [
+    "messageformat",
+    "MessageFormat2",
+    "MF2",
+    "l10n",
+    "localization",
+    "react",
+    "typescript"
+  ],
   "scripts": {
     "check": "biome check .",
     "prepublishOnly": "npm run check && npm run build && npm version patch -m 'chore: publishing version %s'",

@@ -1,3 +1,24 @@
+/**
+ * Resolves the best matching locale from user preferences against supported locales.
+ * Uses Intl locale matching with fallback chains for better compatibility.
+ *
+ * @param userLocales - User's preferred locales (e.g. navigator.languages)
+ * @param supportedLocales - The locales your app supports (e.g. ["en", "nl-NL", "fr-FR"])
+ * @param localeMatcher - Intl matching strategy (used only for runtime support check)
+ * @returns The best matching locale string
+ *
+ * @throws {Error} When userLocales is not a non-empty array
+ * @throws {Error} When supportedLocales is not a non-empty array
+ *
+ * @example
+ * ```ts
+ * const locale = resolveLocale(
+ *   navigator.languages,
+ *   ["en-US", "nl-NL", "fr-FR"],
+ *   "best fit"
+ * );
+ * ```
+ */
 export function resolveLocale(
   /**
    * e.g. navigator.languages

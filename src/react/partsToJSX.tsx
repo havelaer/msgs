@@ -6,6 +6,20 @@ function createKey(part: any, i: number) {
   return `${part.type}-${part.value}-${part.locale}-${part.kind}-${part.name}-${part.source}-${i}`;
 }
 
+/**
+ * Converts an array of MessagePart objects to React JSX elements.
+ * Handles markup parts by converting them to React components and text parts to fragments.
+ *
+ * @param parts - Array of MessagePart objects to convert
+ * @param args - Optional arguments that can be used to override markup components
+ * @returns Array of React nodes
+ *
+ * @example
+ * ```tsx
+ * const parts = config.formatToParts(locale, message, args);
+ * const jsxElements = partsToJSX(parts, { strong: 'b' });
+ * ```
+ */
 export function partsToJSX(
   parts: MessagePart<any>[],
   args?: Record<string, unknown>,
