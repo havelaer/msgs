@@ -1,113 +1,102 @@
 import type { MessageFormatOptions, MessagePart, Model } from "messageformat";
-import { parseMessage, MessageFormat } from "messageformat";
+import { MessageFormat, parseMessage } from "messageformat";
 import { resolveLocale as resolveLocaleFn } from "./resolveLocale";
 
 export type Messages<TLocales extends string> =
-	| { [key: string]: Messages<TLocales> }
-	| {
-			[P in TLocales]: string;
-	  };
+  | { [key: string]: Messages<TLocales> }
+  | {
+      [P in TLocales]: string;
+    };
 
 export type Config = {
-	messageFormatOptions?: MessageFormatOptions<any, any>;
+  messageFormatOptions?: MessageFormatOptions<any, any>;
 };
 
 export type MsgsConfig<TLocales extends string> = {
-	parse: <
-		T extends string = TLocales,
-		const U extends Messages<T> = Messages<T>,
-	>(
-		messages: U,
-	) => U;
-	format: (
-		locale: TLocales,
-		msgs: Record<TLocales, Model.Message | string>,
-		args?: Record<string, unknown>,
-	) => string;
-	formatToParts: (
-		locale: TLocales,
-		msgs: Record<TLocales, Model.Message | string>,
-		args?: Record<string, unknown>,
-	) => MessagePart<any>[];
-	resolveLocale: (userLocales: string[] | readonly string[]) => TLocales;
+  parse: <T extends string = TLocales, const U extends Messages<T> = Messages<T>>(messages: U) => U;
+  format: (
+    locale: TLocales,
+    msgs: Record<TLocales, Model.Message | string>,
+    args?: Record<string, unknown>,
+  ) => string;
+  formatToParts: (
+    locale: TLocales,
+    msgs: Record<TLocales, Model.Message | string>,
+    args?: Record<string, unknown>,
+  ) => MessagePart<any>[];
+  resolveLocale: (userLocales: string[] | readonly string[]) => TLocales;
 };
 
 function walkAndParse(node: any, target: any) {
-	for (const key in node) {
-		const value = node[key];
-		if (typeof value === "object" && value !== null) {
-			target[key] = {};
-			walkAndParse(value, target[key]);
-		} else if (typeof value === "string") {
-			target[key] = parseMessage(value);
-		}
-	}
+  for (const key in node) {
+    const value = node[key];
+    if (typeof value === "object" && value !== null) {
+      target[key] = {};
+      walkAndParse(value, target[key]);
+    } else if (typeof value === "string") {
+      target[key] = parseMessage(value);
+    }
+  }
 }
 
-export function defineConfig<
-	TLocales extends string,
-	TDefaultLocale extends TLocales,
->(config: {
-	defaultLocale: TDefaultLocale;
-	locales: Record<TLocales, MessageFormatOptions<any, any>>;
-	options?: MessageFormatOptions<any, any>;
+export function defineConfig<TLocales extends string, TDefaultLocale extends TLocales>(config: {
+  defaultLocale: TDefaultLocale;
+  locales: Record<TLocales, MessageFormatOptions<any, any>>;
+  options?: MessageFormatOptions<any, any>;
 }): MsgsConfig<TLocales> {
-	function parse<
-		T extends string = TLocales,
-		const U extends Messages<T> = Messages<T>,
-	>(messages: U): U {
-		const parsed: any = {};
+  function parse<T extends string = TLocales, const U extends Messages<T> = Messages<T>>(
+    messages: U,
+  ): U {
+    const parsed: any = {};
 
-		walkAndParse(messages, parsed);
+    walkAndParse(messages, parsed);
 
-		return parsed;
-	}
+    return parsed;
+  }
 
-	function createMessageFormat(
-		locale: TLocales,
-		msgs: Record<TLocales, Model.Message | string>,
-	): MessageFormat<any, any> {
-		if (!config.locales[locale])
-			throw new Error(`${locale} not found in config`);
+  function createMessageFormat(
+    locale: TLocales,
+    msgs: Record<TLocales, Model.Message | string>,
+  ): MessageFormat<any, any> {
+    if (!config.locales[locale]) throw new Error(`${locale} not found in config`);
 
-		const mfOptions = { ...config.options, ...config.locales[locale] };
-		const msg: Model.Message | string = msgs[locale];
+    const mfOptions = { ...config.options, ...config.locales[locale] };
+    const msg: Model.Message | string = msgs[locale];
 
-		return new MessageFormat(locale, msg, mfOptions);
-	}
+    return new MessageFormat(locale, msg, mfOptions);
+  }
 
-	function resolveLocale(userLocales: string[]): string {
-		const supportedLocales = new Set<string>([
-			config.defaultLocale,
-			...Object.keys(config.locales),
-		]);
+  function resolveLocale(userLocales: string[]): string {
+    const supportedLocales = new Set<string>([
+      config.defaultLocale,
+      ...Object.keys(config.locales),
+    ]);
 
-		return (
-			resolveLocaleFn(userLocales, Array.from(supportedLocales)) ??
-			config.defaultLocale // fallback, knowing that the runtime does not support it
-		);
-	}
+    return (
+      resolveLocaleFn(userLocales, Array.from(supportedLocales)) ?? config.defaultLocale // fallback, knowing that the runtime does not support it
+    );
+  }
 
-	function format(
-		locale: TLocales,
-		msgs: Record<TLocales, Model.Message | string>,
-		args?: Record<string, unknown>,
-	): string {
-		return createMessageFormat(locale, msgs).format(args);
-	}
+  function format(
+    locale: TLocales,
+    msgs: Record<TLocales, Model.Message | string>,
+    args?: Record<string, unknown>,
+  ): string {
+    return createMessageFormat(locale, msgs).format(args);
+  }
 
-	function formatToParts(
-		locale: TLocales,
-		msgs: Record<TLocales, Model.Message | string>,
-		args?: Record<string, unknown>,
-	): MessagePart<any>[] {
-		return createMessageFormat(locale, msgs).formatToParts(args);
-	}
+  function formatToParts(
+    locale: TLocales,
+    msgs: Record<TLocales, Model.Message | string>,
+    args?: Record<string, unknown>,
+  ): MessagePart<any>[] {
+    return createMessageFormat(locale, msgs).formatToParts(args);
+  }
 
-	return {
-		parse,
-		format,
-		formatToParts,
-		resolveLocale,
-	} as MsgsConfig<TLocales>;
+  return {
+    parse,
+    format,
+    formatToParts,
+    resolveLocale,
+  } as MsgsConfig<TLocales>;
 }

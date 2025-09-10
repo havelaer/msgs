@@ -1,50 +1,38 @@
 import type {
-	MessagePart,
-	MessageStringPart,
-	MessageTextPart,
-	MessageMarkupPart,
-	MessageBiDiIsolationPart,
-	MessageNumberPart,
-	MessageDateTimePart,
-	MessageFallbackPart,
+  MessageBiDiIsolationPart,
+  MessageDateTimePart,
+  MessageFallbackPart,
+  MessageMarkupPart,
+  MessageNumberPart,
+  MessagePart,
+  MessageStringPart,
+  MessageTextPart,
 } from "messageformat";
 
 export function isTextPart(part: MessagePart<any>): part is MessageTextPart {
-	return part.type === "text";
+  return part.type === "text";
 }
 
-export function isStringPart(
-	part: MessagePart<any>,
-): part is MessageStringPart {
-	return part.type === "string";
+export function isStringPart(part: MessagePart<any>): part is MessageStringPart {
+  return part.type === "string";
 }
 
-export function isMarkupPart(
-	part: MessagePart<any>,
-): part is MessageMarkupPart {
-	return part.type === "markup";
+export function isMarkupPart(part: MessagePart<any>): part is MessageMarkupPart {
+  return part.type === "markup";
 }
 
-export function isBiDiIsolationPart(
-	part: MessagePart<any>,
-): part is MessageBiDiIsolationPart {
-	return part.type === "bidiIsolation";
+export function isBiDiIsolationPart(part: MessagePart<any>): part is MessageBiDiIsolationPart {
+  return part.type === "bidiIsolation";
 }
 
-export function isNumberPart(
-	part: MessagePart<any>,
-): part is MessageNumberPart {
-	return part.type === "number";
+export function isNumberPart(part: MessagePart<any>): part is MessageNumberPart {
+  return part.type === "number";
 }
 
-export function isDateTimePart(
-	part: MessagePart<any>,
-): part is MessageDateTimePart {
-	return part.type === "datetime";
+export function isDateTimePart(part: MessagePart<any>): part is MessageDateTimePart {
+  return part.type === "datetime";
 }
 
-export function isFallbackPart(
-	part: MessagePart<any>,
-): part is MessageFallbackPart {
-	return part.type === "fallback";
+export function isFallbackPart(part: MessagePart<any>): part is MessageFallbackPart {
+  return part.type === "fallback";
 }
