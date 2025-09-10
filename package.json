@@ -16,8 +16,12 @@
       "import": "./dist/functions/index.js"
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "lint": "biome lint .",
+    "prepublishOnly": "npm run lint -- --fix && npm run build && npm version patch -m 'chore: publishing version %s'",
     "build": "tsdown"
   },
   "files": [
