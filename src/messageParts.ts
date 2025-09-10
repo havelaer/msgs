@@ -6,6 +6,7 @@ import type {
 	MessageBiDiIsolationPart,
 	MessageNumberPart,
 	MessageDateTimePart,
+	MessageFallbackPart,
 } from "messageformat";
 
 export function isTextPart(part: MessagePart<any>): part is MessageTextPart {
@@ -40,4 +41,10 @@ export function isDateTimePart(
 	part: MessagePart<any>,
 ): part is MessageDateTimePart {
 	return part.type === "datetime";
+}
+
+export function isFallbackPart(
+	part: MessagePart<any>,
+): part is MessageFallbackPart {
+	return part.type === "fallback";
 }

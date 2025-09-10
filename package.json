@@ -1,10 +1,27 @@
 {
   "name": "@havelaer/msgs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js"
+    },
+    "./functions": {
+      "types": "./dist/functions/index.d.ts",
+      "import": "./dist/functions/index.js"
+    }
+  },
   "scripts": {
     "lint": "biome lint ."
   },
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/node": "^22.13.9",
@@ -19,6 +36,6 @@
     "playground"
   ],
   "dependencies": {
-    "messageformat": "4.0.0-10"
+    "messageformat": "4.0.0-13"
   }
 }

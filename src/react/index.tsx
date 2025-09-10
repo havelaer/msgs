@@ -1,57 +1,65 @@
 import { type ReactNode, createContext, useContext } from "react";
-import type { Formatter } from "..";
-import { buildJsxTree } from "./utils";
+import type { MsgsConfig } from "..";
+import { partsToJSX } from "./partsToJSX";
 
 const localeContext = createContext<string | null>(null);
-const formatterContext = createContext<Formatter<any> | null>(null);
+
+const configContext = createContext<MsgsConfig<any> | null>(null);
+
+type ArgValue = string | number | boolean | null | undefined;
 
 type Translator = {
-	(msg: any, args?: Record<string, unknown>): string;
-	jsx(msg: any, args?: Record<string, unknown>): ReactNode;
+	(msg: any, args?: Record<string, ArgValue>): string;
+	jsx(msg: any, args?: Record<string, ArgValue>): ReactNode;
+	locale: string;
 };
 
 export function useTranslator(): Translator {
-	const formatter = useContext(formatterContext);
+	const config = useContext(configContext);
 	const locale = useContext(localeContext);
 
-	if (!formatter) throw new Error("format not set by a TranslatorProvider");
-	if (typeof locale !== "string")
-		throw new Error("locale not set by a TranslatorProvider");
+	if (!config) throw new Error("config not set by a MsgsProvider");
 
-	const result: Translator = function translate(
+	if (typeof locale !== "string") {
+		throw new Error("locale not set by a LocaleProvider");
+	}
+
+	const translator: Translator = function translate(
 		msg: any,
-		args?: Record<string, unknown>,
+		args?: Record<string, ArgValue>,
 	): string {
-		return formatter.format(locale, msg, args) as any;
+		return config.format(locale, msg, args) as any;
 	};
 
-	result.jsx = function translateJsx(
+	translator.jsx = function translateJsx(
 		msg: any,
-		args?: Record<string, unknown>,
+		args?: Record<string, ArgValue>,
 	): ReactNode {
-		const parts = formatter.formatToParts(locale, msg, args);
+		const parts = config.formatToParts(locale, msg, args);
 
-		return <>{buildJsxTree(parts, args)}</>;
+		return <>{partsToJSX(parts, args)}</>;
 	};
 
-	return result;
+	translator.locale = locale;
+
+	return translator;
 }
 
-interface FormatterProviderProps<TLocales extends string> {
-	formatter: Formatter<TLocales>;
+interface MsgsProviderProps<TLocales extends string> {
+	config: MsgsConfig<TLocales>;
 	locale: TLocales;
 	children: ReactNode;
 }
 
-export function FormatterProvider<TLocales extends string>({
-	formatter,
+export function MsgsProvider<TLocales extends string>({
+	config,
 	locale,
 	children,
-}: FormatterProviderProps<TLocales>) {
+}: MsgsProviderProps<TLocales>) {
 	return (
-		<formatterContext.Provider value={formatter}>
+		<configContext.Provider value={config}>
 			<localeContext.Provider value={locale}>{children}</localeContext.Provider>
-		</formatterContext.Provider>
+		</configContext.Provider>
 	);
 }
 
