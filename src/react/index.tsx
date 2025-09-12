@@ -1,15 +1,10 @@
 import { type ReactNode, createContext, useContext } from "react";
-import type { MsgsConfig } from "..";
+import type { ArgValue, Formatter } from "..";
 import { partsToJSX } from "./partsToJSX";
 
 const localeContext = createContext<string | null>(null);
 
-const configContext = createContext<MsgsConfig<any> | null>(null);
-
-/**
- * Valid argument values for message formatting.
- */
-type ArgValue = string | number | boolean | null | undefined;
+const formatterContext = createContext<Formatter<any> | null>(null);
 
 /**
  * Translator object returned by useTranslator hook.
@@ -48,14 +43,10 @@ type Translator = {
  * ```
  */
 export function useTranslator(): Translator {
-  const config = useContext(configContext);
-  const locale = useContext(localeContext);
+  const config = useContext(formatterContext);
+  const locale = useContext(localeContext)!;
 
-  if (!config) throw new Error("config not set by a MsgsProvider");
-
-  if (typeof locale !== "string") {
-    throw new Error("locale not set by a LocaleProvider");
-  }
+  if (!config) throw new Error("msgs config not set by a MsgsProvider");
 
   const translator: Translator = function translate(
     msg: any,
@@ -81,8 +72,8 @@ export function useTranslator(): Translator {
  * @template TLocales - The supported locale strings
  */
 interface MsgsProviderProps<TLocales extends string> {
-  /** The message configuration object */
-  config: MsgsConfig<TLocales>;
+  /** The message formatter object */
+  formatter: Formatter<TLocales>;
   /** The current locale */
   locale: TLocales;
   /** Child components */
@@ -90,12 +81,12 @@ interface MsgsProviderProps<TLocales extends string> {
 }
 
 /**
- * React provider component that makes message configuration available to child components.
+ * React provider component that makes message formatter and localeavailable to child components.
  *
  * @template TLocales - The supported locale strings
  *
  * @param props - Component props
- * @param props.config - The message configuration object
+ * @param props.formatter - The message formatter object
  * @param props.locale - The current locale
  * @param props.children - Child components
  *
@@ -103,7 +94,7 @@ interface MsgsProviderProps<TLocales extends string> {
  * ```tsx
  * function App() {
  *   return (
- *     <MsgsProvider config={msgsConfig} locale="en-US">
+ *     <MsgsProvider formatter={Formatter} locale="en-US">
  *       <MyComponent />
  *     </MsgsProvider>
  *   );
@@ -111,14 +102,14 @@ interface MsgsProviderProps<TLocales extends string> {
  * ```
  */
 export function MsgsProvider<TLocales extends string>({
-  config,
+  formatter,
   locale,
   children,
 }: MsgsProviderProps<TLocales>) {
   return (
-    <configContext.Provider value={config}>
+    <formatterContext.Provider value={formatter}>
       <localeContext.Provider value={locale}>{children}</localeContext.Provider>
-    </configContext.Provider>
+    </formatterContext.Provider>
   );
 }
 

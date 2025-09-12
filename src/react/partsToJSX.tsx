@@ -1,6 +1,14 @@
 import type { MessagePart } from "messageformat";
 import { type ElementType, Fragment, type ReactNode } from "react";
-import { isMarkupPart } from "../messageParts";
+import {
+  isMarkupPart,
+  isBiDiIsolationPart,
+  isStringPart,
+  isTextPart,
+  isNumberPart,
+  isDateTimePart,
+  isFallbackPart,
+} from "../messageParts";
 
 function createKey(part: any, i: number) {
   return `${part.type}-${part.value}-${part.locale}-${part.kind}-${part.name}-${part.source}-${i}`;
@@ -20,6 +28,7 @@ function createKey(part: any, i: number) {
  * const jsxElements = partsToJSX(parts, { strong: 'b' });
  * ```
  */
+
 export function partsToJSX(
   parts: MessagePart<any>[],
   args?: Record<string, unknown>,
@@ -32,7 +41,20 @@ export function partsToJSX(
   while (i < (stop ?? parts.length)) {
     const part = parts[i];
 
-    if (isMarkupPart(part) && part.kind === "open") {
+    if (isTextPart(part)) {
+      // Handle text parts
+      result.push(<Fragment key={createKey(part, i)}>{part.value}</Fragment>);
+      i++;
+    } else if (isBiDiIsolationPart(part)) {
+      // Handle bidi isolation parts - these contain the ⁨ and ⁩ characters
+      // For variables, we just skip the bidi isolation markers
+      i++;
+    } else if (isStringPart(part)) {
+      // Handle string parts (variable values)
+      result.push(<Fragment key={createKey(part, i)}>{part.value}</Fragment>);
+      i++;
+    } else if (isMarkupPart(part) && part.kind === "open") {
+      // Handle markup open tags
       const tagName = part.name;
       const Tag = (args?.[tagName] as ElementType) ?? tagName;
       const jsxProps = part.options ?? {};
@@ -40,7 +62,7 @@ export function partsToJSX(
       // Find the matching close tag
       let depth = 1;
       let j = i + 1;
-      while (j < parts.length) {
+      while (j < (stop ?? parts.length)) {
         const p = parts[j];
         if (isMarkupPart(p) && p.name === tagName) {
           if (p.kind === "open") depth++;
@@ -62,16 +84,29 @@ export function partsToJSX(
     } else if (isMarkupPart(part) && part.kind === "close") {
       // End of current markup, return to previous recursion level
       break;
+    } else if (isNumberPart(part) && part.parts) {
+      // Handle number parts with nested parts
+      result.push(<Fragment key={createKey(part, i)}>{partsToJSX(part.parts, args)}</Fragment>);
+      i++;
+    } else if (isDateTimePart(part) && part.parts) {
+      // Handle datetime parts with nested parts
+      result.push(<Fragment key={createKey(part, i)}>{partsToJSX(part.parts, args)}</Fragment>);
+      i++;
+    } else if (isFallbackPart(part)) {
+      // Handle fallback parts (unsupported function calls)
+      console.warn("Unsupported MessagePart", part);
+      result.push(<Fragment key={createKey(part, i)}>[{part.source}]</Fragment>);
+      i++;
     } else if ("type" in part && "parts" in part && Array.isArray(part.parts)) {
+      // Handle other parts with nested parts
       result.push(<Fragment key={createKey(part, i)}>{partsToJSX(part.parts, args)}</Fragment>);
       i++;
     } else if ("type" in part && "value" in part && typeof part.value === "string") {
+      // Handle other parts with string values
       result.push(<Fragment key={createKey(part, i)}>{part.value}</Fragment>);
       i++;
     } else {
-      console.warn("Unsupported MessagePart", part);
-      result.push(null);
-      i++;
+      throw new Error(`Unhandled MessagePart ${JSON.stringify(part)}`);
     }
   }
 

@@ -1,4 +1,4 @@
-import { defineConfig } from "../src";
+import { createFormatter } from "../src";
 import * as functions from "../src/functions";
 
 function uppercase(_ctx: any, _options: any, value: any) {
@@ -9,7 +9,7 @@ function uppercase(_ctx: any, _options: any, value: any) {
   };
 }
 
-export default defineConfig({
+export default createFormatter({
   locales: {
     "en-US": {},
     "nl-NL": {},

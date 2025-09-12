@@ -2,7 +2,7 @@ import "./App.css";
 import { useState } from "react";
 import { LocaleProvider, MsgsProvider, useTranslator } from "../src/react";
 import msgs from "./App.msgs";
-import msgsConfig from "./msgs.config";
+import formatter from "./formatter";
 
 function Greeting({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   const t = useTranslator();
@@ -20,6 +20,7 @@ function Greeting({ value, onChange }: { value: string; onChange: (value: string
       <div>{t.jsx(msgs.hello, { name: value, b: "em" })}</div>
       <div>{t.jsx(msgs.localeDependedUrl, { link: "a" })}</div>
       <div>{t.jsx(msgs.withGenericUrl, { link: "a", url: "https://example.com" })}</div>
+      <div>{t(msgs.functions.date, { date })}</div>
       <div>{t.jsx(msgs.functions.date, { date })}</div>
       <div>{t.jsx(msgs.functions.percent, { percent: 0.5 })}</div>
       <input
@@ -36,7 +37,7 @@ function App() {
   const [name, setName] = useState("John");
 
   return (
-    <MsgsProvider config={msgsConfig} locale="nl-NL">
+    <MsgsProvider formatter={formatter} locale="nl-NL">
       <h6>Dutch:</h6>
       <Greeting value={name} onChange={setName} />
       <h6>English:</h6>
@@ -48,7 +49,7 @@ function App() {
         <Greeting value={name} onChange={setName} />
       </LocaleProvider>
       <h6>(browser default):</h6>
-      <LocaleProvider locale={msgsConfig.resolveLocale(navigator.languages)}>
+      <LocaleProvider locale={formatter.resolveLocale(navigator.languages)}>
         <Greeting value={name} onChange={setName} />
       </LocaleProvider>
     </MsgsProvider>

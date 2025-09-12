@@ -40,19 +40,20 @@ export function resolveLocale(
     throw new Error("supportedLocales must be a non-empty array");
   }
 
-  // 1) Canonicalize app-supported locales and
-  //    keep only those the runtime actually supports.
+  // Canonicalize app-supported locales and
+  // keep only those the runtime actually supports.
   const supportedCanon = Intl.getCanonicalLocales(supportedLocales);
+
   const runtimeSupported = new Set(
     Intl.NumberFormat.supportedLocalesOf(supportedCanon, { localeMatcher }),
   );
   if (runtimeSupported.size === 0) {
-    // Fallback: if none of your locales are supported by this runtime,
+    // Fallback: if none of your app supported locales are supported by this runtime,
     // just use your first canonical supported (still canonicalized).
     return supportedCanon[0];
   }
 
-  // 2) Try each user-preferred locale (in order), generating a full fallback chain.
+  // Try each user-preferred locale (in order), generating a full fallback chain.
   for (const raw of userLocales) {
     // Strip unicode ('-u-…') and transform ('-t-…') extensions; they
     // aren’t relevant for matching against your whitelist.
@@ -72,7 +73,7 @@ export function resolveLocale(
     }
   }
 
-  // 3) Nothing matched any preference; choose your first runtime-supported locale.
+  // Nothing matched any preference; choose your first runtime-supported locale.
   // (Keeps behavior deterministic.)
   return runtimeSupported.values().next().value;
 }

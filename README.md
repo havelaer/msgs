@@ -2,21 +2,39 @@
 
 **Under development.**
 
-Component based i18n messages for React. 
+Msgs is a library for internationalization of TypeScript/JavaScript applications. It is built on top of [MessageFormat 2 (MF2)](https://messageformat.unicode.org) and provides a set of functions to format numbers, date and time, and other types.
 
-- Uses [MessageFormat 2 (MF2)](https://messageformat.unicode.org) for formatting.
-- Optional Vite plugin for precompilation.
-- React hook for using the messages.
-- Typesafe messages.
+- Uses [MessageFormat 2 (MF2)](https://messageformat.unicode.org) for message formatting.
+- TypeScript support.
+- Formatting functions for [numbers (currency, percentage, unit, etc.)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat), [date and time](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat), [relative time](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat), [list](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat), and more.
+- Optional React hook for React applications.
 
 ## Example
 
 ```ts
-// Greeting.msgs.ts
-import msgs from "./msgs.config";
+// formatter.ts
+import { createFormatter } from "@havelaer/msgs";
+import * as functions from "@havelaer/msgs/functions";
 
-export default msgs.parse({
-  greeting: {
+export default createFormatter({
+  locales: {
+    "en-US": {},
+    "nl-NL": {},
+    "fr-FR": {},
+  },
+  defaultLocale: "en-US",
+  options: {
+    functions, // several Intl formatters
+  },
+});
+```
+
+```ts
+// Greeting.msgs.ts
+import formatter from "./formatter";
+
+export default formatter.parse({
+  hello: {
     "en-US": "Hello {$name}",
     "nl-NL": "Hallo {$name}",
     "fr-FR": "Bonjour {$name}",
@@ -32,19 +50,21 @@ import msgs from "./Greeting.msgs";
 export function Greeting() {
   const t = useTranslator();
 
-  return <h1>{t(msgs.greeting, { name: "John" })}</h1>;
+  return <h1>{t(msgs.hello, { name: "John" })}</h1>;
 }
 ```
 
 ```tsx
 // App.tsx
 import { MsgsProvider } from "@havelaer/msgs/react";
-import msgsConfig from "./msgs.config";
+import formatter from "./formatter";
 import { Greeting } from "./Greeting";
 
 export default function App() {
+  const locale = formatter.resolveLocale(navigator.languages);
+
   return (
-    <MsgsProvider config={msgsConfig} locale={msgsConfig.resolveLocale(navigator.languages)}>
+    <MsgsProvider formatter={formatter} locale={locale}>
       <Greeting />
     </MsgsProvider>
   );

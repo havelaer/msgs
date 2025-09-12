@@ -1,123 +1,138 @@
-import { DefaultFunctions, DraftFunctions, type MessageFunction } from "messageformat/functions";
+import type { MessageFunction, MessageFunctionContext } from "messageformat/functions";
 
 /**
- * Currency formatting function for MessageFormat.
- * Formats numbers as currency values.
+ * Date and/or time formatting function for MessageFormat.
+ * It's a wrapper around the `Intl.DateTimeFormat` API.
  *
- * @beta
+ * @param options - The Intl.DateTimeFormatOptions object.
+ * @param arg - Date string
+ *
+ * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
  *
  * @example
  * ```ts
- * "Price: {$price :currency currency=USD}"
+ * "{$date :datetime dateStyle=short timeStyle=short}" { date: new Date("2024-01-15T14:30:00") };
+ * // Expected output: "Jan 15, 2024, 2:30 PM"
  * ```
  */
-export const currency: MessageFunction<any, any> = DraftFunctions.currency;
+export const datetime: MessageFunction<any, any> = (
+  ctx: MessageFunctionContext,
+  options: Intl.DateTimeFormatOptions,
+  arg: unknown,
+) => {
+  const formatter = new Intl.DateTimeFormat(ctx.locales, options);
+  const date = new Date(arg as any as string);
 
-/**
- * Date formatting function for MessageFormat.
- * Formats dates according to locale conventions.
- *
- * @beta
- *
- * @example
- * ```ts
- * "Today is {$date :date dateStyle=medium}"
- * ```
- */
-export const date: MessageFunction<any, any> = DraftFunctions.date;
-
-/**
- * Date and time formatting function for MessageFormat.
- * Formats both date and time components.
- *
- * @beta
- *
- * @example
- * ```ts
- * "Event at {$datetime :datetime dateStyle=short timeStyle=short}"
- * ```
- */
-export const datetime: MessageFunction<any, any> = DraftFunctions.datetime;
-
-/**
- * Percentage formatting function for MessageFormat.
- * Formats numbers as percentages.
- *
- * @beta
- *
- * @example
- * ```ts
- * "Progress: {$progress :percent}"
- * ```
- */
-export const percent: MessageFunction<any, any> = DraftFunctions.percent;
+  return {
+    type: "datetime",
+    toString: () => formatter.format(date),
+    toParts: () => formatter.formatToParts(date),
+  };
+};
 
 /**
  * Number formatting function for MessageFormat.
- * Formats numbers with locale-specific formatting.
+ * It's a wrapper around the `Intl.NumberFormat` API.
+ *
+ * @param options - The Intl.NumberFormatOptions object.
+ * @param arg - An number or a string that can be parsed as a number.
+ *
+ * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
  *
  * @example
  * ```ts
- * "Count: {$count :number}"
+ * "{$amount :number style=decimal}" { amount: 0.1234 };
+ * // Expected output: "0.1234"
+ *
+ * "{$amount :number style=currency currency=USD}" { amount: 0.1234 };
+ * // Expected output: "$0.12"
+ *
+ * "{$amount :number style=percentage}" { amount: 0.1234 };
+ * // Expected output: "12%"
+ *
+ * "{$amount :number style=unit unit=liter}" { amount: 0.1234 };
+ * // Expected output: "0.12L"
  * ```
  */
-export const number: MessageFunction<any, any> = DefaultFunctions.number;
+export const number: MessageFunction<any, any> = (
+  ctx: MessageFunctionContext,
+  options: Intl.NumberFormatOptions,
+  arg: unknown,
+) => {
+  const formatter = new Intl.NumberFormat(ctx.locales, options);
+  const number = Number.parseFloat(arg as any as string);
+
+  return {
+    type: "number",
+    toString: () => formatter.format(number),
+    toParts: () => formatter.formatToParts(number),
+  };
+};
 
 /**
- * Time formatting function for MessageFormat.
- * Formats time values according to locale conventions.
+ * Relative time formatting function for MessageFormat.
+ * It's a wrapper around the `Intl.RelativeTimeFormat` API.
  *
- * @beta
+ * @param options - The Intl.RelativeTimeFormatOptions object.
+ * @param arg - An number or a string that can be parsed as a number.
+ *
+ * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
  *
  * @example
  * ```ts
- * "Time: {$time :time timeStyle=short}"
+ * "{$days :relativeTime unit=day}" { days: -1 };
+ * // Expected output: "1 day ago"
  * ```
  */
-export const time: MessageFunction<any, any> = DraftFunctions.time;
+export const relativeTime: MessageFunction<any, any> = (
+  ctx: MessageFunctionContext,
+  options: { unit?: Intl.RelativeTimeFormatUnit } & Intl.RelativeTimeFormatOptions,
+  arg: unknown,
+) => {
+  const formatter = new Intl.RelativeTimeFormat(ctx.locales, options);
+  const number = Number.parseInt(arg as any as string);
+
+  if (!options.unit) {
+    throw new Error(":relativeTime requires a unit parameter");
+  }
+
+  return {
+    type: "relativeTime",
+    toString: () => formatter.format(number, options.unit!),
+    toParts: () => formatter.formatToParts(number, options.unit!),
+  };
+};
 
 /**
- * Unit formatting function for MessageFormat.
- * Formats numbers with units (length, weight, etc.).
+ * List formatting function for MessageFormat.
+ * It's a wrapper around the `Intl.ListFormat` API.
  *
- * @beta
+ * @remarks
+ * Needs tsconfig.json/compilerOptions.lib to include "ES2021" or higher.
+ *
+ * @param options - The Intl.ListFormatOptions object.
+ * @param arg - An number
+ *
+ * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat
  *
  * @example
  * ```ts
- * "Distance: {$distance :unit unit=mile}"
+ * "{$vehicles :list style=long type=conjunction}"
+ * { vehicles: ["Motorcycle", "Bus", "Car"] }
+ * // Expected output: "Motorcycle, Bus, and Car"
  * ```
  */
-export const unit: MessageFunction<any, any> = DraftFunctions.unit;
+export const list: MessageFunction<any, any> = (
+  ctx: MessageFunctionContext,
+  options: Intl.ListFormatOptions,
+  arg: unknown,
+) => {
+  const formatter = new Intl.ListFormat(ctx.locales, options);
+  const list = typeof arg === "string" ? arg.split(",") : Array.isArray(arg) ? arg : [];
 
-/**
- * Integer formatting function for MessageFormat.
- * Formats numbers as integers.
- *
- * @example
- * ```ts
- * "Items: {$count :integer}"
- * ```
- */
-export const integer: MessageFunction<any, any> = DefaultFunctions.integer;
-
-/**
- * Offset formatting function for MessageFormat.
- * Formats timezone offsets.
- *
- * @example
- * ```ts
- * "Offset: {$offset :offset}"
- * ```
- */
-export const offset: MessageFunction<any, any> = DefaultFunctions.offset;
-
-/**
- * String formatting function for MessageFormat.
- * Formats values as strings with optional transformations.
- *
- * @example
- * ```ts
- * "Name: {$name :string}"
- * ```
- */
-export const string: MessageFunction<any, any> = DefaultFunctions.string;
+  return {
+    type: "list",
+    toString: () => formatter.format(list),
+    toParts: () => formatter.formatToParts(list),
+  };
+};

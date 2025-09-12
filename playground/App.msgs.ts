@@ -1,6 +1,6 @@
-import msgs from "./msgs.config";
+import formatter from "./formatter";
 
-export default msgs.parse({
+export default formatter.parse({
   hello: {
     "en-US": "Hello {#b}{$name}{/b} {$name :uppercase}",
     "nl-NL": "Hallo {#b}{$name}{/b} {$name :uppercase}",
@@ -30,14 +30,14 @@ export default msgs.parse({
   },
   functions: {
     date: {
-      "en-US": "Date: {$date :date}, Time: {$date :time}, Date and Time: {$date :datetime}",
-      "nl-NL": "Datum: {$date :date}, Tijd: {$date :time}, Datum en Tijd: {$date :datetime}",
-      "fr-FR": "Date: {$date :date}, Heure: {$date :time}, Date et Heure: {$date :datetime}",
+      "en-US": "Date: {$date :datetime dateStyle=long}, Time: {$date :datetime timeStyle=long}",
+      "nl-NL": "Datum: {$date :datetime dateStyle=long}, Tijd: {$date :datetime timeStyle=long}",
+      "fr-FR": "Date: {$date :datetime dateStyle=long}, Heure: {$date :datetime timeStyle=long}",
     },
     percent: {
-      "en-US": "Percent: {$percent :percent}",
-      "nl-NL": "Percentage: {$percent :percent}",
-      "fr-FR": "Pourcentage: {$percent :percent}",
+      "en-US": "Percent: {$percent :number style=percent}",
+      "nl-NL": "Percentage: {$percent :number style=percent}",
+      "fr-FR": "Pourcentage: {$percent :number style=percent}",
     },
   },
 });

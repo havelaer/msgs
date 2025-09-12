@@ -31,7 +31,9 @@
   "scripts": {
     "check": "biome check .",
     "prepublishOnly": "npm run check && npm run build && npm version patch -m 'chore: publishing version %s'",
-    "build": "tsdown"
+    "build": "tsdown",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
   },
   "files": [
     "dist"
@@ -42,12 +44,17 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^22.13.9",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "happy-dom": "^18.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "typescript": "~5.7.2"
+    "typescript": "~5.7.2",
+    "vitest": "^3.2.4"
   },
   "workspaces": [
     ".",

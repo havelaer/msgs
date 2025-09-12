@@ -3,6 +3,11 @@ import { MessageFormat, parseMessage } from "messageformat";
 import { resolveLocale as resolveLocaleFn } from "./resolveLocale";
 
 /**
+ * Valid argument values for message formatting.
+ */
+export type ArgValue = string | number | boolean | null | undefined;
+
+/**
  * Represents a nested structure of messages for different locales.
  * Can be either a nested object with string keys or a flat object with locale keys.
  *
@@ -43,7 +48,7 @@ export type Messages<TLocales extends string> =
  * const formatted = config.format("en-US", parsed.greeting, { name: "John" });
  * ```
  */
-export type MsgsConfig<TLocales extends string> = {
+export type Formatter<TLocales extends string> = {
   /** Parse message strings into MessageFormat objects */
   parse: <T extends string = TLocales, const U extends Messages<T> = Messages<T>>(messages: U) => U;
   /** Format a message to a string */
@@ -75,7 +80,7 @@ function walkAndParse(node: any, target: any) {
 }
 
 /**
- * Creates a message configuration object for internationalization.
+ * Creates a message formatter object for internationalization.
  *
  * @template TLocales - The supported locale strings
  * @template TDefaultLocale - The default locale (must be one of TLocales)
@@ -85,25 +90,25 @@ function walkAndParse(node: any, target: any) {
  * @param config.locales - Locale-specific MessageFormat options
  * @param config.options - Global MessageFormat options applied to all locales
  *
- * @returns A MsgsConfig object with parsing, formatting, and locale resolution methods
+ * @returns A Formatter object with parsing, formatting, and locale resolution methods
  *
  * @example
  * ```ts
- * const msgsConfig = defineConfig({
+ * const formatter = createFormatter({
  *   defaultLocale: "en-US",
  *   locales: {
- *     "en-US": { currency: "USD" },
- *     "nl-NL": { currency: "EUR" }
+ *     "en-US": { --locale specific MessageFormatOptions-- },
+ *     "nl-NL": { --locale specific MessageFormatOptions-- }
  *   },
- *   options: { date: { dateStyle: "medium" } }
+ *   options: { --global MessageFormatOptions-- }
  * });
  * ```
  */
-export function defineConfig<TLocales extends string, TDefaultLocale extends TLocales>(config: {
+export function createFormatter<TLocales extends string, TDefaultLocale extends TLocales>(config: {
   defaultLocale: TDefaultLocale;
   locales: Record<TLocales, MessageFormatOptions<any, any>>;
   options?: MessageFormatOptions<any, any>;
-}): MsgsConfig<TLocales> {
+}): Formatter<TLocales> {
   function parse<T extends string = TLocales, const U extends Messages<T> = Messages<T>>(
     messages: U,
   ): U {
@@ -158,5 +163,5 @@ export function defineConfig<TLocales extends string, TDefaultLocale extends TLo
     format,
     formatToParts,
     resolveLocale,
-  } as MsgsConfig<TLocales>;
+  } as Formatter<TLocales>;
 }
