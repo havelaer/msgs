@@ -1,9 +1,9 @@
 import "@testing-library/jest-dom";
-import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { MessageFormat } from "messageformat";
-import { partsToJSX } from "./partsToJSX";
+import { describe, expect, it } from "vitest";
 import * as functions from "../functions";
+import { partsToJSX } from "./partsToJSX";
 
 describe("partsToJSX", () => {
   describe("text parts", () => {

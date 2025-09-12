@@ -1,13 +1,13 @@
 import type { MessagePart } from "messageformat";
 import { type ElementType, Fragment, type ReactNode } from "react";
 import {
-  isMarkupPart,
   isBiDiIsolationPart,
-  isStringPart,
-  isTextPart,
-  isNumberPart,
   isDateTimePart,
   isFallbackPart,
+  isMarkupPart,
+  isNumberPart,
+  isStringPart,
+  isTextPart,
 } from "../messageParts";
 
 function createKey(part: any, i: number) {
