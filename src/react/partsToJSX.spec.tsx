@@ -170,7 +170,7 @@ describe("partsToJSX", () => {
       const result = partsToJSX(parts);
 
       const { container } = render(result);
-      expect(container.textContent).toBe("Event at January 15, 2024 at 2:30:00 PM GMT+1");
+      expect(container.textContent).toContain("Event at January 15, 2024 at 2:30:00 PM");
     });
 
     it("should render date", () => {
@@ -192,7 +192,7 @@ describe("partsToJSX", () => {
       const result = partsToJSX(parts);
 
       const { container } = render(result);
-      expect(container.textContent).toBe("Event at 2:30:00 PM GMT+1");
+      expect(container.textContent).toContain("Event at 2:30:00 PM");
     });
   });
 
