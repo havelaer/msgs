@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, renderHook, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { type Formatter, createFormatter } from "..";
+import { createFormatter, type Formatter } from "..";
 import { LocaleProvider, MsgsProvider, useTranslator } from "./index";
 
 // Test messages

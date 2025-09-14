@@ -90,7 +90,7 @@ export const relativeTime: MessageFunction<any, any> = (
   arg: unknown,
 ) => {
   const formatter = new Intl.RelativeTimeFormat(ctx.locales, options);
-  const number = Number.parseInt(arg as any as string);
+  const number = Number.parseInt(arg as any as string, 10);
 
   if (!options.unit) {
     throw new Error(":relativeTime requires a unit parameter");
