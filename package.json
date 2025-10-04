@@ -34,10 +34,9 @@
   ],
   "scripts": {
     "check": "biome check .",
-    "prepublishOnly": "npm run check && npm run build && npm version patch -m 'chore: publishing version %s'",
+    "release": "npm run check && tsc && npm version patch -m 'chore: bump version %s'",
     "build": "tsdown",
-    "test": "vitest run",
-    "test:watch": "vitest watch"
+    "test": "vitest"
   },
   "files": [
     "dist"
