@@ -5,7 +5,11 @@ import msgs from "./App.msgs";
 import formatter from "./formatter";
 
 function Link({ href, children }: { href: string; children: React.ReactNode }) {
-  return <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>;
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer">
+      {children}
+    </a>
+  );
 }
 
 function Greeting({ value, onChange }: { value: string; onChange: (value: string) => void }) {

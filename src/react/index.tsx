@@ -1,4 +1,4 @@
-import { createContext, JSX, type ReactNode, useContext } from "react";
+import { createContext, type JSX, type ReactNode, useContext } from "react";
 import type { ArgValue, Formatter } from "..";
 import { partsToJSX } from "./partsToJSX";
 
