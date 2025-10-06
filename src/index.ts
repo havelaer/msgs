@@ -5,7 +5,7 @@ import { resolveLocale as resolveLocaleFn } from "./resolveLocale";
 /**
  * Valid argument values for message formatting.
  */
-export type ArgValue = string | number | boolean | null | undefined;
+export type ArgValue<T = never> = string | number | boolean | T;
 
 /**
  * Represents a nested structure of messages for different locales.
@@ -145,7 +145,7 @@ export function createFormatter<TLocales extends string, TDefaultLocale extends 
   function format(
     locale: TLocales,
     msgs: Record<TLocales, Model.Message | string>,
-    args?: Record<string, unknown>,
+    args?: Record<string, ArgValue>,
   ): string {
     return createMessageFormat(locale, msgs).format(args);
   }

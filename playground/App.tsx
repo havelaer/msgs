@@ -4,6 +4,10 @@ import { LocaleProvider, MsgsProvider, useTranslator } from "../src/react";
 import msgs from "./App.msgs";
 import formatter from "./formatter";
 
+function Link({ href, children }: { href: string; children: React.ReactNode }) {
+  return <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>;
+}
+
 function Greeting({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   const t = useTranslator();
   const date = new Date().toISOString();
@@ -19,7 +23,7 @@ function Greeting({ value, onChange }: { value: string; onChange: (value: string
       <div>{t.jsx(msgs.hello, { name: value })}</div>
       <div>{t.jsx(msgs.hello, { name: value, b: "em" })}</div>
       <div>{t.jsx(msgs.localeDependedUrl, { link: "a" })}</div>
-      <div>{t.jsx(msgs.withGenericUrl, { link: "a", url: "https://example.com" })}</div>
+      <div>{t.jsx(msgs.withGenericUrl, { link: Link, url: "https://example.com" })}</div>
       <div>{t(msgs.functions.date, { date })}</div>
       <div>{t.jsx(msgs.functions.date, { date })}</div>
       <div>{t.jsx(msgs.functions.percent, { percent: 0.5 })}</div>

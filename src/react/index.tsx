@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useContext } from "react";
+import { createContext, JSX, type ReactNode, useContext } from "react";
 import type { ArgValue, Formatter } from "..";
 import { partsToJSX } from "./partsToJSX";
 
@@ -14,7 +14,7 @@ type Translator = {
   /** Format a message to a string */
   (msg: any, args?: Record<string, ArgValue>): string;
   /** Format a message to JSX elements, used for messages with markup */
-  jsx(msg: any, args?: Record<string, ArgValue>): ReactNode;
+  jsx(msg: any, args?: Record<string, ArgValue<JSX.ElementType>>): ReactNode;
   /** Current locale string */
   locale: string;
 };
