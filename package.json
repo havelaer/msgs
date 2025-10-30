@@ -58,7 +58,7 @@
     "react-dom": "^19.1.1",
     "tsdown": "^0.15.1",
     "typescript": "~5.9.2",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.3"
   },
   "workspaces": [
     ".",
