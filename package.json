@@ -35,6 +35,7 @@
   "scripts": {
     "check": "biome check .",
     "release": "npm run check && tsc && npm version patch -m 'chore: bump version %s'",
+    "postrelease": "git push && git push --tags",
     "build": "tsdown",
     "test": "vitest"
   },

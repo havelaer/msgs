@@ -67,8 +67,19 @@ export function resolveLocale(
 
     // Find the first item in the chain that your app supports and the runtime supports.
     for (const candidate of chain) {
+      // Check for exact match first
       if (runtimeSupported.has(candidate)) {
         return candidate;
+      }
+
+      // If candidate is language-only (no hyphens), check for any supported locale
+      // that starts with that language code (prioritizes language over region)
+      if (!candidate.includes("-")) {
+        for (const supported of runtimeSupported) {
+          if (supported.startsWith(`${candidate}-`) || supported === candidate) {
+            return supported;
+          }
+        }
       }
     }
   }

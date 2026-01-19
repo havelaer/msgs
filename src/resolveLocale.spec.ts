@@ -92,6 +92,11 @@ describe("resolveLocale", () => {
       const result = resolveLocale(["en-US", "fr-CA"], ["en", "fr"], "best fit");
       expect(result).toBe("en");
     });
+
+    it("should prioritize language over region", () => {
+      const result = resolveLocale(["en-NL", "nl-NL"], ["en-US", "nl-NL"], "best fit");
+      expect(result).toBe("en-US");
+    });
   });
 
   describe("fallback chain behavior", () => {
