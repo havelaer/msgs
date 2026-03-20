@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { render } from "@testing-library/react";
 import { MessageFormat } from "messageformat";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import * as functions from "../functions";
 import { partsToJSX } from "./partsToJSX";
 
@@ -237,6 +237,45 @@ describe("partsToJSX", () => {
 
       const { container } = render(result);
       expect(container.textContent).toBe("Hello: [$unknown]");
+    });
+  });
+
+  describe("extra coverage", () => {
+    it("renders fallback parts", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      const parts = [{ type: "fallback", source: "$unknown" }] as any;
+      const result = partsToJSX(parts);
+      const { container } = render(result);
+
+      expect(container.textContent).toBe("[$unknown]");
+      expect(warnSpy).toHaveBeenCalled();
+
+      warnSpy.mockRestore();
+    });
+
+    it("renders generic parts with a string value", () => {
+      const parts = [{ type: "customString", value: "Hello" }] as any;
+      const { container } = render(partsToJSX(parts));
+      expect(container.textContent).toBe("Hello");
+    });
+
+    it("renders generic parts with nested parts", () => {
+      const parts = [
+        {
+          type: "customNested",
+          parts: [{ type: "text", value: "Inner" }],
+        },
+      ] as any;
+
+      const { container } = render(partsToJSX(parts));
+      expect(container.textContent).toBe("Inner");
+    });
+
+    it("throws for unhandled MessageParts", () => {
+      const parts = [{ type: "customUnhandled", value: 123 }] as any;
+
+      expect(() => partsToJSX(parts)).toThrow(/Unhandled MessagePart/);
     });
   });
 });
