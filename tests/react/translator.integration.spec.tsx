@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import { describe, it } from "vitest";
+import { describe, it, expect } from "vitest";
 import { createFormatter } from "../../src/index";
 import { LocaleProvider, MsgsProvider, useTranslator } from "../../src/react";
 

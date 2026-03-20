@@ -7,7 +7,7 @@ export default defineConfig({
     include: ["src/**/*.{spec,test}.{ts,tsx}", "tests/**/*.{spec,test}.{ts,tsx}"],
     exclude: ["playground/**"],
     coverage: {
-      reporter: ["json"],
+      reporter: ["text"],
       include: ["src/**/*.ts", "src/**/*.tsx"],
       exclude: ["src/**/*.spec.ts", "src/**/*.spec.tsx", "src/**/*.test.ts", "src/**/*.test.tsx"],
       thresholds: {
