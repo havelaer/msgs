@@ -5,20 +5,26 @@ describe("messageformat functions", () => {
   describe("relativeTime", () => {
     it("formats relative time when a unit is provided", () => {
       const ctx = { locales: "en" } as any;
-      const options = { unit: "day", numeric: "auto" } as Intl.RelativeTimeFormatOptions & { unit: Intl.RelativeTimeFormatUnit };
+      const options = { unit: "day", numeric: "auto" } as Intl.RelativeTimeFormatOptions & {
+        unit: Intl.RelativeTimeFormatUnit;
+      };
 
       const result = relativeTime(ctx, options, "-1");
       expect(result.type).toBe("relativeTime");
 
       const expected = new Intl.RelativeTimeFormat(ctx.locales, options).format(-1, options.unit);
       expect(result.toString()).toBe(expected);
-      expect(result.toParts()).toEqual(new Intl.RelativeTimeFormat(ctx.locales, options).formatToParts(-1, options.unit));
+      expect(result.toParts()).toEqual(
+        new Intl.RelativeTimeFormat(ctx.locales, options).formatToParts(-1, options.unit),
+      );
     });
 
     it("throws when :relativeTime unit is missing", () => {
       const ctx = { locales: "en" } as any;
 
-      expect(() => relativeTime(ctx, {} as any, "1")).toThrow(":relativeTime requires a unit parameter");
+      expect(() => relativeTime(ctx, {} as any, "1")).toThrow(
+        ":relativeTime requires a unit parameter",
+      );
     });
   });
 
@@ -30,9 +36,15 @@ describe("messageformat functions", () => {
       const result = list(ctx, options, "Motorcycle,Bus,Car");
       expect(result.type).toBe("list");
 
-      const expected = new Intl.ListFormat(ctx.locales, options).format(["Motorcycle", "Bus", "Car"]);
+      const expected = new Intl.ListFormat(ctx.locales, options).format([
+        "Motorcycle",
+        "Bus",
+        "Car",
+      ]);
       expect(result.toString()).toBe(expected);
-      expect(result.toParts()).toEqual(new Intl.ListFormat(ctx.locales, options).formatToParts(["Motorcycle", "Bus", "Car"]));
+      expect(result.toParts()).toEqual(
+        new Intl.ListFormat(ctx.locales, options).formatToParts(["Motorcycle", "Bus", "Car"]),
+      );
     });
 
     it("formats list from array input", () => {
@@ -41,7 +53,11 @@ describe("messageformat functions", () => {
 
       const result = list(ctx, options, ["Motorcycle", "Bus", "Car"]);
 
-      const expected = new Intl.ListFormat(ctx.locales, options).format(["Motorcycle", "Bus", "Car"]);
+      const expected = new Intl.ListFormat(ctx.locales, options).format([
+        "Motorcycle",
+        "Bus",
+        "Car",
+      ]);
       expect(result.toString()).toBe(expected);
     });
 
@@ -62,16 +78,25 @@ describe("messageformat functions", () => {
       const ctx = { locales: "en" } as any;
       const result = number(ctx, { style: "decimal" } as Intl.NumberFormatOptions, "5.5");
       expect(result.type).toBe("number");
-      expect(result.toString()).toBe(new Intl.NumberFormat(ctx.locales, { style: "decimal" }).format(5.5));
+      expect(result.toString()).toBe(
+        new Intl.NumberFormat(ctx.locales, { style: "decimal" }).format(5.5),
+      );
     });
 
     it("formats datetime", () => {
       const ctx = { locales: "en" } as any;
       const date = new Date("2024-01-15T14:30:00Z");
-      const result = datetime(ctx, { dateStyle: "short", timeStyle: "short" } as Intl.DateTimeFormatOptions, date.toISOString());
+      const result = datetime(
+        ctx,
+        { dateStyle: "short", timeStyle: "short" } as Intl.DateTimeFormatOptions,
+        date.toISOString(),
+      );
       expect(result.type).toBe("datetime");
-      expect(result.toString()).toBe(new Intl.DateTimeFormat(ctx.locales, { dateStyle: "short", timeStyle: "short" }).format(new Date(date.toISOString())));
+      expect(result.toString()).toBe(
+        new Intl.DateTimeFormat(ctx.locales, { dateStyle: "short", timeStyle: "short" }).format(
+          new Date(date.toISOString()),
+        ),
+      );
     });
   });
 });
-

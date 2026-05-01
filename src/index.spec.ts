@@ -39,15 +39,23 @@ describe("createFormatter", () => {
 
     const parsed = formatter.parse(messages);
 
-    expect(formatter.format("en-US", parsed.group.greeting, { name: "John" })).toBe("Hello \u2068John\u2069!");
+    expect(formatter.format("en-US", parsed.group.greeting, { name: "John" })).toBe(
+      "Hello \u2068John\u2069!",
+    );
     expect(formatter.format("nl-NL", parsed.group.simple)).toBe("Welkom!");
 
     const parts = formatter.formatToParts("en-US", parsed.group.description, { count: 5 });
-    expect(parts.some((p: any) => p.type === "markup" && p.kind === "open" && p.name === "b")).toBe(true);
-    expect(parts.some((p: any) => p.type === "markup" && p.kind === "close" && p.name === "b")).toBe(true);
+    expect(parts.some((p: any) => p.type === "markup" && p.kind === "open" && p.name === "b")).toBe(
+      true,
+    );
+    expect(
+      parts.some((p: any) => p.type === "markup" && p.kind === "close" && p.name === "b"),
+    ).toBe(true);
     expect(parts.some((p: any) => p.type === "text")).toBe(true);
 
-    expect(formatter.format("en-US", parsed.group.description, { count: 5 })).toBe("You have 5 items.");
+    expect(formatter.format("en-US", parsed.group.description, { count: 5 })).toBe(
+      "You have 5 items.",
+    );
   });
 
   it("throws when formatting with a locale not present in config", async () => {
@@ -68,7 +76,9 @@ describe("createFormatter", () => {
       },
     });
 
-    expect(() => formatter.format("fr-FR" as any, parsed.simple)).toThrow("fr-FR not found in config");
+    expect(() => formatter.format("fr-FR" as any, parsed.simple)).toThrow(
+      "fr-FR not found in config",
+    );
   });
 
   it("falls back to defaultLocale when resolveLocale returns nullish", async () => {
@@ -94,4 +104,3 @@ describe("createFormatter", () => {
     expect(supportedLocalesPassed).toEqual(expect.arrayContaining(["en-US", "nl-NL"]));
   });
 });
-

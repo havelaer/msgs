@@ -1,6 +1,6 @@
 import { MessageFormat } from "messageformat";
-import { describe, expect, it } from "vitest";
 import { DefaultFunctions, DraftFunctions } from "messageformat/functions";
+import { describe, expect, it } from "vitest";
 import {
   isBiDiIsolationPart,
   isDateTimePart,
@@ -70,4 +70,3 @@ describe("messageParts type guards", () => {
     expect(isFallbackPart(fallback)).toBe(true);
   });
 });
-
